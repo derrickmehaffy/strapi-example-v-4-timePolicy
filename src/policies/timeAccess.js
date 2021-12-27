@@ -1,22 +1,35 @@
 'use strict';
 const utils = require('@strapi/utils');
-const { ValidationError } = utils.errors;
+const { ApplicationError } = utils.errors;
 
 /**
  * `timeAccess` policy.
  */
 
 module.exports = (policyContext, config, { strapi }) => {
-  // Add your own logic here.
+  // Apply only if the user is logged in
   if (policyContext.state.user) {
-    let startTime = "6:00"
-    let endTime = "8:30"
-    const currentTime = new Date().getUTCHours() + ':' + new Date().getUTCMinutes()
 
-    if (currentTime >= startTime && currentTime <= endTime ) {
+    // Construct time vars
+    let startTime = "6:00"
+    let endTime = "8:00"
+    const currentDate = new Date()
+
+    // Normalize the start time to a date
+    let startDate = new Date(currentDate.getTime());
+    startDate.setHours(startTime.split(":")[0]);
+    startDate.setMinutes(startTime.split(":")[1]);
+
+    // Normalize the end time to a date
+    let endDate = new Date(currentDate.getTime());
+    endDate.setHours(endTime.split(":")[0]);
+    endDate.setMinutes(endTime.split(":")[1]);
+
+    // Run comparison, if outside throw error
+    if (currentDate >= startDate && currentDate <= endDate ) {
       return true
     } else {
-      throw new ValidationError('You are outside the allowed time');
+      throw new ApplicationError('You are outside the allowed time');
     }
   }
 
