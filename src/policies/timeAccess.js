@@ -12,7 +12,7 @@ module.exports = (policyContext, config, { strapi }) => {
 
     // Construct time vars
     let startTime = "6:00"
-    let endTime = "8:00"
+    let endTime = "15:03"
     const currentDate = new Date()
 
     // Normalize the start time to a date
@@ -29,7 +29,7 @@ module.exports = (policyContext, config, { strapi }) => {
     if (currentDate >= startDate && currentDate <= endDate ) {
       return true
     } else {
-      throw new ApplicationError('You are outside the allowed time');
+      throw new ApplicationError(`Requests are only accepted between ${startTime} and ${endTime}. It\'s currently ${currentDate}`);
     }
   }
 
